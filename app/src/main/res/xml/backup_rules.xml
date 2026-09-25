@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="database" path="note-vault.db" />
+    <include domain="database" path="note-vault-vault.db" />
+    <include domain="sharedpref" path="notevault_prefs.xml" />
+    <include domain="sharedpref" path="notevault_vault_prefs.xml" />
+</full-backup-content>

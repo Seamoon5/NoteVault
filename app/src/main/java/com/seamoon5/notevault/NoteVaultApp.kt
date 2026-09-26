@@ -24,6 +24,7 @@ import com.seamoon5.notevault.ui.EditorState
 import com.seamoon5.notevault.ui.NoteEditorScreen
 import com.seamoon5.notevault.ui.NotesScreen
 import com.seamoon5.notevault.ui.SettingsScreen
+import com.seamoon5.notevault.ui.TabNotes
 import com.seamoon5.notevault.ui.VaultListScreen
 import com.seamoon5.notevault.ui.VaultLockScreen
 import com.seamoon5.notevault.ui.buildMarkdown
@@ -47,6 +48,9 @@ sealed interface Screen {
     data object Vault : Screen
     data class VaultEditor(val noteId: Long?) : Screen
 }
+
+/** TEMPORARY: flipped to true only to design the vault screens. Must be false in the shipped APK. */
+private const val TEMP_ALLOW_VAULT_SCREENSHOTS = false
 
 private data class PendingExport(val fileName: String, val content: String)
 
@@ -242,7 +246,11 @@ fun NoteVaultApp() {
         val window = (ctx as? android.app.Activity)?.window
         if (window != null) {
             if (onVaultScreen) {
-                window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+                if (TEMP_ALLOW_VAULT_SCREENSHOTS) {
+                    window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+                } else {
+                    window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+                }
             } else {
                 window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
             }
@@ -267,8 +275,8 @@ fun NoteVaultApp() {
                     onQueryChange = notesVm::setQuery,
                     onFolderPick = notesVm::setFolder,
                     onTagPick = notesVm::setTag,
+                    onClearFilters = notesVm::clearFilters,
                     onOpen = { openRegular(it) },
-                    onCreate = { openRegular(null) },
                     onPin = notesVm::togglePin,
                     onDelete = notesVm::delete,
                     onExportOne = { note ->
@@ -279,8 +287,19 @@ fun NoteVaultApp() {
                         )
                         markdownLauncher.launch("${base}_${fileStamp()}.md")
                     },
-                    onOpenVault = { backStack.add(Screen.Vault) },
-                    onOpenSettings = { backStack.add(Screen.Settings) }
+                    onTabSelect = { tab ->
+                        when (tab) {
+                            TabNotes.NOTES -> if (current !is Screen.Notes) backStack.add(Screen.Notes)
+                            TabNotes.SEARCH -> {
+                                if (current !is Screen.Notes) backStack.add(Screen.Notes)
+                            }
+                            TabNotes.SETTINGS -> if (current !is Screen.Settings) backStack.add(Screen.Settings)
+                            TabNotes.VAULT -> if (current !is Screen.Vault) backStack.add(Screen.Vault)
+                            TabNotes.NEW -> openRegular(null)
+                        }
+                    },
+                    onNewNote = { openRegular(null) },
+                    vaultBadge = vaultCount
                 )
 
                 is Screen.Settings -> SettingsScreen(

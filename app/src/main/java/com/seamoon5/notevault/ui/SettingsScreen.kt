@@ -95,15 +95,10 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
 
-            item { SectionLabel("Appearance") }
+            item { SectionHeading("Appearance") }
 
             item {
-                Card(
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                    )
-                ) {
+                GlassCard {
                     Column(Modifier.padding(16.dp)) {
                         Text("Theme", style = MaterialTheme.typography.titleSmall)
                         Spacer(Modifier.size(4.dp))
@@ -144,12 +139,7 @@ fun SettingsScreen(
             }
 
             item {
-                Card(
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                    )
-                ) {
+                GlassCard {
                     Row(
                         Modifier.padding(16.dp).fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
@@ -169,15 +159,10 @@ fun SettingsScreen(
                 }
             }
 
-            item { SectionLabel("Folders") }
+            item { SectionHeading("Folders") }
 
             item {
-                Card(
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                    )
-                ) {
+                GlassCard {
                     Column(Modifier.padding(16.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             OutlinedTextField(
@@ -232,15 +217,10 @@ fun SettingsScreen(
                 }
             }
 
-            item { SectionLabel("Backup and export") }
+            item { SectionHeading("Backup and export") }
 
             item {
-                Card(
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                    )
-                ) {
+                GlassCard {
                     Column(Modifier.padding(16.dp)) {
                         Text("Export all regular notes", style = MaterialTheme.typography.titleSmall)
                         Spacer(Modifier.size(4.dp))
@@ -267,15 +247,10 @@ fun SettingsScreen(
                 }
             }
 
-            item { SectionLabel("Security") }
+            item { SectionHeading("Security") }
 
             item {
-                Card(
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                    )
-                ) {
+                GlassCard {
                     Column(Modifier.padding(16.dp)) {
                         Text("Encrypted vault", style = MaterialTheme.typography.titleSmall)
                         Spacer(Modifier.size(4.dp))
@@ -310,15 +285,10 @@ fun SettingsScreen(
                 }
             }
 
-            item { SectionLabel("About") }
+            item { SectionHeading("About") }
 
             item {
-                Card(
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                    )
-                ) {
+                GlassCard {
                     Column(Modifier.padding(16.dp)) {
                         Text("NoteVault 1.0", style = MaterialTheme.typography.titleSmall)
                         Spacer(Modifier.size(4.dp))

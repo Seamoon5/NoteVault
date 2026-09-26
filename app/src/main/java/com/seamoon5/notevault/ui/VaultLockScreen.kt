@@ -394,9 +394,13 @@ private fun KeyBox(onClick: () -> Unit, content: @Composable () -> Unit) {
     Surface(
         onClick = onClick,
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+        color = MaterialTheme.colorScheme.surfaceVariant,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.size(72.dp)
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            MaterialTheme.colorScheme.outlineVariant
+        ),
+        modifier = Modifier.size(68.dp)
     ) {
         Box(contentAlignment = Alignment.Center) { content() }
     }

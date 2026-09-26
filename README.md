@@ -39,10 +39,45 @@ HyperOS) but works on any Android 8.0 (API 26) phone or newer.
 - Nothing is ever uploaded to any server
 
 ### Appearance
-- Material 3 design with a custom violet brand colour
+- Material 3 with a custom violet brand colour
 - Light / Dark / Follow-system theme
-- A frosted-glass style background (see note below)
+- **Frosted glass background** over a genuinely blurred colour mesh. Real blur
+  needs Android 12+; the phone runs Android 13, so it is used here, with a
+  graceful fallback for older phones
 - Custom adaptive app icon and splash screen
+- Bottom navigation bar (Notes, Search, new, Vault, Settings) with a raised
+  centre action
+- Notes grouped by **Pinned / Today / Yesterday / Earlier this week / Earlier**
+- Time-aware greeting in the header
+
+---
+
+## Develop it on your own phone
+
+`tools/phone.sh` drives a real phone from WSL. It uses the **Windows** `adb.exe`
+on purpose: WSL2 cannot see USB devices directly, so a Linux `adb` would never
+find the phone.
+
+One-time phone setup:
+
+1. Settings > About phone > tap **MIUI version** 7 times
+2. Settings > Additional settings > Developer options
+3. Turn ON **USB debugging**
+4. Turn ON **USB debugging (Security settings)** - without this one, MIUI
+   rejects taps and typing with a `SecurityException`
+5. Plug in the cable and accept "Allow USB debugging"
+
+Then:
+
+```bash
+./tools/phone.sh devices            # is the phone seen?
+./tools/phone.sh install            # install the freshly built APK
+./tools/phone.sh launch             # open the app
+./tools/phone.sh shot out.png       # screenshot (0 bytes inside the vault - by design)
+./tools/phone.sh tap 540 1200       # tap
+./tools/phone.sh text "hello"       # type
+./tools/phone.sh logs               # crash output
+```
 
 ---
 
@@ -167,6 +202,50 @@ simple. A larger app would want Room's FTS4.
 
 ## Version history
 
+### v2.0 - 2026-09-26
+Complete design rebuild after feedback that v1.0 "looked like a school project".
+Designed against real screenshots pulled from the phone via ADB, not by guesswork.
+
+**Look and feel**
+- New colour system: one violet accent (removed the teal that fought with it)
+- True near-black dark theme instead of purple-grey
+- Note colours rebuilt: dark cards use very dark tinted surfaces with bright
+  text, instead of muddy mid-tones
+- Larger, more confident corner radii; pill-shaped actions
+- Frosted glass over a **really blurred** colour mesh (Android 12+ RenderEffect)
+- Custom card design: clear title / preview / footer hierarchy, press-scale spring
+- Haptic feedback on tab changes, new note and card taps
+
+**Structure**
+- Bottom navigation bar with a raised centre "new note" button, replacing four
+  icons crammed into the top bar
+- Notes grouped into Pinned / Today / Yesterday / Earlier this week / Earlier
+- Compact filter chips in a single row instead of two chunky rows
+- Editor: the paper now fills the screen (it was a fixed 260dp box with dead
+  space), and colour / folder / tags moved into one compact toolbar
+- Time-aware greeting in the header
+- Richer illustrated empty states
+
+**Bugs found and fixed while testing on the real phone**
+- Dark text on dark background. Outside a `Scaffold`, Compose's
+  `LocalContentColor` defaults to **black**, so every screen rebuilt without a
+  `Scaffold` had invisible titles. Fixed once, globally, in the background layer.
+- **Light mode was completely broken.** The background and note cards read the
+  *phone's* dark setting while Material switched to light, producing a dark
+  screen full of light chips. Fixed by making the chosen theme the single source
+  of truth (`LocalIsDark`) that every component reads.
+- Date format rendered "26 Sept 2026" on this device's locale. Now uses a fixed
+  English month table.
+- Note cards repeated the body text when the body was identical to the title.
+- Vault keypad buttons were nearly invisible against the dark background.
+- The bottom bar first rendered over the header instead of at the bottom.
+- Section headers broke the two-column grid (a full-width header restarts
+  staggered-grid lanes, so every note landed in column one).
+
+**Developer tooling added**
+- `tools/phone.sh` - install, launch, screenshot, tap, type and read crash logs
+  on a real phone from WSL2
+
 ### v1.0 - 2026-09-25
 First release.
 - Notes with title, body, 7 colours, pin
@@ -186,6 +265,7 @@ First release.
 - Full backup and restore to a chosen folder
 - Time-based reminders
 - Richer search (full-text index)
+- Swipe gestures (swipe to delete, swipe to pin)
 
 ---
 
